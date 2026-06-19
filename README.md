@@ -22,6 +22,11 @@ então instala como qualquer outro mod, ao lado do Forge.
 - 🧩 **Mod de Forge** — instala junto do Forge 1.8.9, não substitui o jogo.
 - 🎨 **ClickGUI moderno** — tema dark + ciano, sliders, categorias, bind por tecla.
 
+> **Prefere a versão standalone?** O Elixe também existe como **client/modificação standalone**
+> (não-mod, base MCP 1.8.9) em **[SudanoJ/elixe](https://github.com/SudanoJ/elixe)** — código
+> pós-decompilação pra mergear num workspace MCP. Este repositório (`elixe-mod`) é a versão
+> **mod de Forge**, mais fácil de instalar. Use a que preferir.
+
 ## Instalação (jogadores)
 
 1. Instale o **Minecraft Forge 1.8.9**.

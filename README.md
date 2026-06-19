@@ -1,6 +1,6 @@
 <div align="center">
 
-# elixe
+<img src="src/main/resources/elixe_logo.png" width="420" alt="Elixe">
 
 **Utility client gratuito e open-source para Minecraft 1.8.9 — agora como mod de Forge + Mixin.**
 
@@ -17,10 +17,10 @@ Diferente dos clients antigos (um `.jar` modificado do jogo inteiro), o Elixe é
 Forge** que usa **[Mixin](https://github.com/SpongePowered/Mixin)** pra injetar só o necessário —
 então instala como qualquer outro mod, ao lado do Forge.
 
-- 🆓 **Gratuito** — sem paywall, sem chave.
-- 🔓 **Open-source** — audita, faz fork, contribui.
-- 🧩 **Mod de Forge** — instala junto do Forge 1.8.9, não substitui o jogo.
-- 🎨 **ClickGUI moderno** — tema dark + ciano, sliders, categorias, bind por tecla.
+- **Gratuito** — sem paywall, sem chave.
+- **Open-source** — audita, faz fork, contribui.
+- **Mod de Forge** — instala junto do Forge 1.8.9, não substitui o jogo.
+- **ClickGUI moderno** — tema dark + ciano, sliders, categorias, bind por tecla.
 
 > **Prefere a versão standalone?** O Elixe também existe como **client/modificação standalone**
 > (não-mod, base MCP 1.8.9) em **[SudanoJ/elixe](https://github.com/SudanoJ/elixe)** — código
@@ -35,14 +35,6 @@ então instala como qualquer outro mod, ao lado do Forge.
 
 > OptiFine é opcional — instale o mod do OptiFine 1.8.9 na pasta `mods` se quiser; o Elixe se
 > integra via reflection quando ele está presente, e funciona sem ele.
-
-## Módulos
-
-**Combat:** Kill Aura · Aim Assist · Reach · Hitbox · AutoClicker · WTap · Velocity · Criticals · AutoSoup · Misplace
-**Movement:** Sprint · Fly · NoFall · SafeWalk · InventoryMove · NoJumpDelay
-**Render:** ClickGUI · HUD · ESP · Chams · Skeletal · Camera · Name Protect · Aesthetics · HealthLog · Cosmetics
-**Player:** Phase · Derp · **World:** FastPlace · MLG
-**Misc:** Old Animations · AntiBot · Ninja · ItemLock · Commands · Mush Exploit · AntiMonk
 
 ## Build (desenvolvedores)
 

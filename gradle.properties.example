@@ -1,0 +1,9 @@
+# Copie para `gradle.properties` (que fica fora do git) e ajuste se precisar.
+
+# -Xmx3G é OBRIGATÓRIO: sem isso o :decompileMc (FernFlower) estoura OutOfMemory.
+org.gradle.jvmargs=-Xmx3G -XX:MaxMetaspaceSize=512m
+org.gradle.daemon=true
+
+# Aponte para um JDK 8 (NÃO um JRE) se o `java` do seu PATH for JRE — senão o :recompileMc
+# falha com "Unable to find a javac compiler". Ajuste o caminho para o seu.
+# org.gradle.java.home=C:/Program Files/Java/jdk8u482-b08

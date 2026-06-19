@@ -1,0 +1,16 @@
+[
+{
+  "modid": "elixe",
+  "name": "Elixe",
+  "description": "Utility client gratuito e open-source para Minecraft 1.8.9, agora como mod de Forge + Mixin. ClickGUI moderno e os modulos que importam (combat, movement, render e mais). elixe.lol",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "https://elixe.lol",
+  "updateUrl": "",
+  "authorList": ["Sudano"],
+  "credits": "Sudano",
+  "logoFile": "elixe_logo.png",
+  "screenshots": [],
+  "dependencies": []
+}
+]

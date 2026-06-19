@@ -1,0 +1,126 @@
+// Elixe — Forge 1.8.9 mod + Mixin (legacy 0.7.x)
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "https://maven.minecraftforge.net/"
+        }
+        maven {
+            name = "sponge"
+            url = "https://repo.spongepowered.org/repository/maven-public/"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'org.spongepowered.mixin'
+
+version = "8.0"
+group = "elixe"
+archivesBaseName = "elixe"
+
+sourceCompatibility = targetCompatibility = '1.8'
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+    options.encoding = 'UTF-8'
+}
+
+minecraft {
+    version = "1.8.9-11.15.1.2318-1.8.9"
+    runDir = "run"
+
+    // Mantemos os mappings do MDK (re-rodar setup com outros mappings é custoso).
+    mappings = "stable_22"
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "forge"
+        url = "https://maven.minecraftforge.net/"
+    }
+    maven {
+        name = "sponge"
+        url = "https://repo.spongepowered.org/repository/maven-public/"
+    }
+}
+
+configurations {
+    // 'shade' = libs empacotadas dentro do jar final (produção). Mixin precisa
+    // estar no jar pra o MixinTweaker carregar.
+    shade
+    compile.extendsFrom shade
+}
+
+dependencies {
+    // Event bus (alpine) usa typetools p/ resolver o tipo genérico do evento.
+    shade 'net.jodah:typetools:0.6.2'
+
+    shade('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
+        // Essas já vêm do Minecraft/launchwrapper — não duplicar.
+        exclude module: 'launchwrapper'
+        exclude module: 'guava'
+        exclude module: 'gson'
+        exclude module: 'commons-io'
+        exclude module: 'log4j-core'
+    }
+}
+
+// Annotation processor + refmap (deobf -> SRG na build de produção).
+mixin {
+    defaultObfuscationEnv searge
+    add sourceSets.main, "mixins.elixe.refmap.json"
+}
+
+jar {
+    manifest {
+        attributes(
+            'TweakClass'                   : 'org.spongepowered.asm.launch.MixinTweaker',
+            'TweakOrder'                   : 0,
+            'MixinConfigs'                 : 'mixins.elixe.json',
+            'ForceLoadAsMod'               : true,
+            'FMLCorePluginContainsFMLMod'  : true
+        )
+    }
+    // Empacota o mixin (shade) no jar de produção.
+    from(configurations.shade.collect { it.isDirectory() ? it : zipTree(it) }) {
+        // O jar do Mixin é ASSINADO. Sem remover os arquivos de assinatura, o jar final
+        // dá "Invalid signature file digest for Manifest main attributes" ao ser carregado
+        // (tanto no dev quanto em produção). Também não puxamos o manifest deles.
+        exclude 'META-INF/*.SF', 'META-INF/*.RSA', 'META-INF/*.DSA', 'META-INF/*.MF'
+    }
+}
+
+// Dev (runClient/runServer):
+//  1) O Mixin é carregado pelo coremod ElixeCoreMod (init + addConfiguration), já que no
+//     GradleStart não há jar com manifest pro MixinTweaker achar o config.
+//  2) O FG põe o JAR reobf de produção no classpath, e o FML o ignora como "library" — então
+//     o @Mod ElixeMod nunca sobe (Elixe.INSTANCE = null → NPE). Forçamos as classes DEOBF
+//     (build/classes) no classpath e removemos o jar de produção do run.
+afterEvaluate {
+    tasks.matching { it.name in ['runClient', 'runServer'] }.all { t ->
+        t.jvmArgs '-Dfml.coreMods.load=elixe.core.ElixeCoreMod'
+        t.classpath = sourceSets.main.output + t.classpath.filter { f -> !f.name.startsWith('elixe-') }
+        // runClient é um JavaExec que NÃO deveria ser cacheável, mas o Gradle às vezes marca como
+        // UP-TO-DATE e pula (não abre o jogo, sem erro). Força a sempre executar.
+        t.outputs.upToDateWhen { false }
+    }
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version': project.version, 'mcversion': project.minecraft.version
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}

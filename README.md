@@ -54,3 +54,9 @@ Pra rodar em dev: `./gradlew runClient`.
 
 Veja [LICENSE](LICENSE). Forge e bibliotecas relacionadas mantêm suas próprias licenças
 (arquivos `*-License.txt`).
+
+## Discord
+
+Caso queira, sinta-se livre para entrar em nosso Discord, pelo link abaixo:
+https://discord.gg/aT97ksEKbs (ou https://elixe.lol/discord)
+

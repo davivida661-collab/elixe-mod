@@ -4,8 +4,7 @@ out/
 
 # Gradle
 .gradle/
-gradle.properties
-!gradle.properties.example
+!gradle.properties
 
 # IDE
 .idea/

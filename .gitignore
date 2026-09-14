@@ -1,35 +1,35 @@
-# eclipse
-bin
-*.launch
-.settings
-.metadata
-.classpath
-.project
+# Build output
+build/
+out/
 
-# idea
-out
+# Gradle
+.gradle/
+gradle.properties
+!gradle.properties.example
+
+# IDE
+.idea/
+*.iml
 *.ipr
 *.iws
-*.iml
-.idea
+.eclipse/
+.classpath
+.project
+.settings/
+bin/
 
-# gradle
-build
-.gradle
-
-# forge / fg generated
-eclipse
-run
-
-# heap dumps (geram em OOM, podem ter GBs)
-*.hprof
-
-# config local do claude
-.claude
-
-# machine-specific (caminho do JDK, jvm args) — cada dev cria o seu a partir do .example
-gradle.properties
+# Forge / MCP
+run/
+logs/
+*.log
+eclipse/
+src/main/resources/META-INF/MANIFEST.MF
 
 # OS
 .DS_Store
 Thumbs.db
+
+# Misc
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar

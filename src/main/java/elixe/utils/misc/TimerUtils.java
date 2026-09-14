@@ -1,19 +1,17 @@
 package elixe.utils.misc;
 
-import java.util.Date;
-
 public class TimerUtils {
 	public class MilisecondTimer {
 		private long time, dif = 0;
 
 		public MilisecondTimer() {
-			time = new Date().getTime();
+			time = System.currentTimeMillis();
 		}
 
 		public boolean hasTimePassed(int ms) {
 
 			long trueDelay = ms - dif;
-			long timeDif = new Date().getTime() - time;
+			long timeDif = System.currentTimeMillis() - time;
 
 			if (timeDif >= trueDelay) {
 				if (ms > timeDif - trueDelay) {
@@ -29,7 +27,7 @@ public class TimerUtils {
 		}
 
 		public void reset() {
-			time = new Date().getTime();
+			time = System.currentTimeMillis();
 		}
 	}
 
@@ -37,15 +35,11 @@ public class TimerUtils {
 		private int ticks = 0;
 		
 		public void update() {
-			ticks++;			
+			ticks++;
 		}
 		
 		public boolean hasTimePassed(int passedTicks) {
-			if (ticks >= passedTicks) {
-				return true;
-			} else {
-				return false;
-			}
+			return ticks >= passedTicks;
 		}
 		
 		public void reset() {

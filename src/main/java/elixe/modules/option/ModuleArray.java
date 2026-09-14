@@ -1,14 +1,10 @@
 package elixe.modules.option;
 
-import java.lang.reflect.Type;
-
 import elixe.modules.AModuleOption;
-import elixe.ui.base.ElixeButtonBase;
 
 public class ModuleArray extends AModuleOption {
 	private String[] array;
 	private int selectedIndex;
-	
 
 	public ModuleArray(String name, int index, String[] array) {
 		this(name, index, array, false);
@@ -31,7 +27,6 @@ public class ModuleArray extends AModuleOption {
 		return array[selectedIndex];
 	}
 
-
 	public Object getValue() {
 		return selectedIndex;
 	}
@@ -40,5 +35,4 @@ public class ModuleArray extends AModuleOption {
 		this.selectedIndex = (int) v;
 		valueChanged();
 	}
-
 }

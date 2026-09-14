@@ -1,23 +1,16 @@
 package elixe.modules.render;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.lwjgl.opengl.GL11;
-
 import elixe.Elixe;
-import elixe.events.OnBrightnessEntityEvent;
 import elixe.events.OnPacketReceiveEvent;
 import elixe.events.OnRender2DEvent;
 import elixe.modules.Module;
 import elixe.modules.ModuleCategory;
-import elixe.utils.transitions.ITransition;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.DataWatcher.WatchableObject;
 import net.minecraft.network.play.server.S1CPacketEntityMetadata;
 
@@ -26,7 +19,7 @@ public class HealthLog extends Module {
 	public HealthLog() {
 		super("HealthLog", ModuleCategory.RENDER);
 	}
-	
+
 
 	public void onDisable() {
 		super.onDisable();
@@ -43,7 +36,7 @@ public class HealthLog extends Module {
 			if (meta.getEntityId() == mc.thePlayer.getEntityId()) {
 				for (WatchableObject data : meta.func_149376_c()) {
 					if (data.getDataValueId() == 6) {
-						healthLogs.add(new LogEntry(100f, ySpacing, new Date().getTime(), 2000, "cu -> " + data.getObject()));
+						healthLogs.add(new LogEntry(100f, ySpacing, System.currentTimeMillis(), 2000, "cu -> " + data.getObject()));
 						ySpacing += 10f;
 					}
 				}
@@ -51,45 +44,45 @@ public class HealthLog extends Module {
 		}
 	});
 	
-	
-	
 	@EventHandler
 	private Listener<OnRender2DEvent> onRender2DEvent = new Listener<>(e -> {
 		updateEntries();
 		if (!this.mc.gameSettings.showDebugInfo) {
-
-			Iterator<LogEntry> logIterator = healthLogs.iterator();
-			while (logIterator.hasNext()) {
-				LogEntry log = logIterator.next();
+			for (LogEntry log : healthLogs) {
 				elixe.utils.misc.FontUtil.drawStringWithShadow(mc.fontRendererObj, log.text, log.x, log.y, 0xFFFFFFFF);
 			}
 		}
 	});
 	
 	private void updateEntries() {
-		long actualTime = new Date().getTime();
+		long actualTime = System.currentTimeMillis();
 		
-		int spacingChange = 0;
-		Iterator<LogEntry> logIterator = healthLogs.iterator();
-		while (logIterator.hasNext()) {
-			LogEntry log = logIterator.next();		
+		// Collect expired entries first to avoid ConcurrentModificationException
+		ArrayList<LogEntry> toRemove = new ArrayList<>();
+		for (LogEntry log : healthLogs) {
 			if (log.timePassed(actualTime)) {
-				ySpacing -= 10f;
-				healthLogs.remove(log);
-			} else {
+				toRemove.add(log);
 			}
 		}
-
+		
+		if (!toRemove.isEmpty()) {
+			healthLogs.removeAll(toRemove);
+			// Recalculate ySpacing from scratch
+			ySpacing = 10f;
+			for (LogEntry log : healthLogs) {
+				log.y = ySpacing;
+				ySpacing += 10f;
+			}
+		}
 	}
 
 	public class LogEntry {
-		ArrayList<ITransition> entryTransitions = new ArrayList<ITransition>();
-		public float x,y;
-		
+		public float x, y;
+
 		public long startTime;
 		public int logTime;
 		public String text;
-	
+
 		public LogEntry(float x, float y, long startTime, int logTime, String text) {
 			super();
 			this.x = x;
@@ -100,10 +93,7 @@ public class HealthLog extends Module {
 		}
 
 		public boolean timePassed(long actualTime) {
-			if (actualTime - startTime > logTime) {
-				return true;
-			}
-			return false;
+			return actualTime - startTime > logTime;
 		}
 	}
 }

@@ -1,10 +1,6 @@
 package elixe.modules.option;
 
-import java.lang.reflect.Type;
-
 import elixe.modules.AModuleOption;
-import elixe.ui.base.ElixeButtonBase;
-import elixe.ui.clickgui.options.ElixeIntegerButton;
 
 public class ModuleInteger extends AModuleOption {
 	private int value;
@@ -19,7 +15,6 @@ public class ModuleInteger extends AModuleOption {
 		this.max = max;
 		valueChanged();
 	}
-
 	
 	public int getMin() {
 		return min;
@@ -33,7 +28,6 @@ public class ModuleInteger extends AModuleOption {
 		this.value = i;
 	}
 
-	
 	public Object getValue() {
 		return value;
 	}

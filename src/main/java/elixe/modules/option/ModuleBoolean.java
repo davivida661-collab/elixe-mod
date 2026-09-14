@@ -1,13 +1,9 @@
 package elixe.modules.option;
 
-import java.lang.reflect.Type;
-
 import elixe.modules.AModuleOption;
-import elixe.ui.base.ElixeButtonBase;
 
 public class ModuleBoolean extends AModuleOption {
 	private boolean state;
-
 
 	public ModuleBoolean(String name, boolean state) {
 		this(name, state, false);

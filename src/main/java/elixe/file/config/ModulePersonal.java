@@ -42,7 +42,10 @@ public class ModulePersonal implements FileConfig {
 	}
 
 	public void loadConfig() throws IOException {
-		JsonObject jsonObject = (JsonObject) new JsonParser().parse(new BufferedReader(new FileReader(dir)));
+		JsonObject jsonObject;
+		try (BufferedReader reader = new BufferedReader(new FileReader(dir))) {
+			jsonObject = (JsonObject) new JsonParser().parse(reader);
+		}
 
 		Iterator<Map.Entry<String, JsonElement>> iterator = jsonObject.entrySet().iterator();
 
@@ -52,7 +55,11 @@ public class ModulePersonal implements FileConfig {
 			Module module = Elixe.INSTANCE.MODULE_MANAGER.getModuleByName(entry.getKey());
 
 			if (module != null) {
-				JsonObject jsonModule = (JsonObject) entry.getValue();
+				JsonElement value = entry.getValue();
+				if (!(value instanceof JsonObject)) {
+					continue;
+				}
+				JsonObject jsonModule = (JsonObject) value;
 
 				// state
 				if (!(module instanceof ClickGUI)) {
@@ -94,9 +101,9 @@ public class ModulePersonal implements FileConfig {
 			jsonObject.add(module.getName(), jsonMod);
 		}
 
-		PrintWriter printWriter = new PrintWriter(new FileWriter(dir));
-		printWriter.println(Elixe.INSTANCE.FILE_MANAGER.GSON.toJson(jsonObject));
-		printWriter.close();
+		try (PrintWriter printWriter = new PrintWriter(new FileWriter(dir))) {
+			printWriter.println(Elixe.INSTANCE.FILE_MANAGER.GSON.toJson(jsonObject));
+		}
 	}
 
 }

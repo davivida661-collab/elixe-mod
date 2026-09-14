@@ -57,7 +57,11 @@ public class ModuleConfig implements FileConfig {
 		if (!file.exists()) {
 			return;
 		}
-		JsonObject jsonObject = (JsonObject) new JsonParser().parse(new BufferedReader(new FileReader(file)));
+
+		JsonObject jsonObject;
+		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+			jsonObject = (JsonObject) new JsonParser().parse(reader);
+		}
 
 		Iterator<Map.Entry<String, JsonElement>> iterator = jsonObject.entrySet().iterator();
 
@@ -68,7 +72,11 @@ public class ModuleConfig implements FileConfig {
 
 			if (module != null) {
 
-				JsonObject jsonModule = (JsonObject) entry.getValue();
+				JsonElement value = entry.getValue();
+				if (!(value instanceof JsonObject)) {
+					continue;
+				}
+				JsonObject jsonModule = (JsonObject) value;
 
 				for (AModuleOption moduleOpt : module.getOptions()) {
 					if (!(moduleOpt instanceof ModuleLabel) && (full || !(moduleOpt instanceof ModuleKey))) {
@@ -102,6 +110,8 @@ public class ModuleConfig implements FileConfig {
 								}
 							} catch (NumberFormatException e) {
 								// format errado
+							} catch (ClassCastException e) {
+								// tipo incompativel
 							}
 						}
 					}
@@ -162,9 +172,9 @@ public class ModuleConfig implements FileConfig {
 			jsonObject.add(module.getName(), jsonMod);
 		}
 
-		PrintWriter printWriter = new PrintWriter(new FileWriter(file));
-		printWriter.println(Elixe.INSTANCE.FILE_MANAGER.GSON.toJson(jsonObject));
-		printWriter.close();
+		try (PrintWriter printWriter = new PrintWriter(new FileWriter(file))) {
+			printWriter.println(Elixe.INSTANCE.FILE_MANAGER.GSON.toJson(jsonObject));
+		}
 	}
 
 }

@@ -1,17 +1,14 @@
 package elixe.modules.combat;
 
-import java.io.IOException;
 import java.util.Random;
 
 import org.lwjgl.input.Mouse;
 
-import elixe.Elixe;
 import elixe.events.OnMouseInputGUIEvent;
 import elixe.events.OnTickEvent;
 import elixe.modules.Module;
 import elixe.modules.ModuleCategory;
 import elixe.modules.option.ModuleBoolean;
-import elixe.modules.option.ModuleFloat;
 import elixe.modules.option.ModuleInteger;
 import elixe.ui.newclickgui.ElixeMenu;
 import elixe.utils.misc.TimerUtils;
@@ -106,7 +103,7 @@ public class AutoClicker extends Module {
 	boolean attacking = false; // se ta atacando
 	boolean firstClick = true; // identificar se é primeiro click depois de segurar
 
-	int attackCode, useCode;
+	int attackKey, useCode;
 
 	boolean handleGuiMouse = false;
 	@EventHandler
@@ -122,13 +119,13 @@ public class AutoClicker extends Module {
 		}
 
 		int attack = mc.gameSettings.keyBindAttack.getKeyCode();
-		int attackCode = attack + 100;
+		int mouseButtonCode = attack + 100;
 
 		// logica pra quebrar bloco
 		if (nullScreen) {
 			if (mc.objectMouseOver != null) {
 				if (breakBlocks && mc.objectMouseOver.typeOfHit == MovingObjectType.BLOCK) {
-					if (Mouse.isButtonDown(attackCode) && !breaking) { // botao ta pra baixo mas com bloco na frente
+					if (Mouse.isButtonDown(mouseButtonCode) && !breaking) { // botao ta pra baixo mas com bloco na frente
 						if (!attacking) { // ta estado em abaixado
 							breaking = true;
 							KeyBinding.setKeyBindState(attack, true);
@@ -144,10 +141,10 @@ public class AutoClicker extends Module {
 
 		// botao esquerdo ta segurado e nao ta quebrando bloco
 		// se vier do check ali em cima, vai estar false
-		if (Mouse.isButtonDown(attackCode) && !breaking) {
+		if (Mouse.isButtonDown(mouseButtonCode) && !breaking) {
 			// check de botao direito aqui em baixo pra nao fazer o firstclick mudar
 
-			if (firstClick) { // primeiro click pra nao ter chande de dar double click
+			if (firstClick) { // primeiro click pra nao ter chance de dar double click
 				firstClick = false;
 				clickTimer.reset();
 				setNewClickDelay();
@@ -199,9 +196,9 @@ public class AutoClicker extends Module {
 
 	@EventHandler
 	private Listener<OnMouseInputGUIEvent> onMouseInputGUIEvent = new Listener<>(e -> {
-		// System.out.println(e.getEventButton() + ", " + e.getEventButtonState());
 		if (handleGuiMouse) {
-			e.setEventButton(attackCode);
+			int attack = mc.gameSettings.keyBindAttack.getKeyCode();
+			e.setEventButton(attack + 100);
 			e.setEventButtonState(attacking);
 			handleGuiMouse = false;
 		}
@@ -209,9 +206,17 @@ public class AutoClicker extends Module {
 
 	// seta novo delay pra esperar pro proximo click
 	private void setNewClickDelay() {
+		if (cpsMin <= 0 || cpsMax <= 0) {
+			clickDelay = 0;
+			return;
+		}
 		// max é o menor, pode confundir
 		int max = 1000 / cpsMax;
 		int min = 1000 / cpsMin;
-		clickDelay = r.nextInt((min - max) + 1) + max;
+		if (min <= max) {
+			clickDelay = max;
+		} else {
+			clickDelay = r.nextInt((min - max) + 1) + max;
+		}
 	}
 }

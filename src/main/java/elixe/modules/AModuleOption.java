@@ -1,10 +1,6 @@
 package elixe.modules;
 
-import java.lang.reflect.Type;
-
-import elixe.Elixe;
 import elixe.ui.IElixeButton;
-import net.minecraft.client.Minecraft;
 
 public abstract class AModuleOption {
 	private boolean show = true;
@@ -40,7 +36,7 @@ public abstract class AModuleOption {
 	public String getName() {
 		return name;
 	}
-	
+
 	private IElixeButton bt;
 
 	public void setButton(IElixeButton button) {

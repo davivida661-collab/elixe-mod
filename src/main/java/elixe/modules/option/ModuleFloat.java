@@ -1,10 +1,6 @@
 package elixe.modules.option;
 
-import java.lang.reflect.Type;
-
 import elixe.modules.AModuleOption;
-import elixe.ui.base.ElixeButtonBase;
-import elixe.ui.clickgui.options.ElixeFloatButton;
 
 public class ModuleFloat extends AModuleOption {
 	private float value;
@@ -31,7 +27,6 @@ public class ModuleFloat extends AModuleOption {
 	public void setValueSilent(float f) {
 		this.value = f;
 	}
-
 
 	public Object getValue() {
 		return value;

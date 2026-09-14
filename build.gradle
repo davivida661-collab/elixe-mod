@@ -48,6 +48,9 @@ dependencies {
         exclude module: 'gson'
         exclude module: 'commons-lang'
     }
+
+    // TypeTools - usado pelo event bus alpine (net.jodah.typetools.TypeResolver)
+    compile 'net.jodah:typetools:0.6.3'
 }
 
 mixin {

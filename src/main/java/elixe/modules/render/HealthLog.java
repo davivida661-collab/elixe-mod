@@ -1,7 +1,7 @@
 package elixe.modules.render;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import elixe.Elixe;

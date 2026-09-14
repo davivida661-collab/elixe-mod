@@ -1,8 +1,10 @@
 buildscript {
     repositories {
+        mavenCentral()
         maven { url = "https://maven.minecraftforge.net/" }
         maven { url = "https://repo.spongepowered.org/maven/" }
-        mavenCentral()
+        maven { url = "https://files.minecraftforge.net/maven" }
+        maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
@@ -29,9 +31,17 @@ minecraft {
     // makeObfSourceJar = false
 }
 
+repositories {
+    mavenCentral()
+    maven { url = "https://repo.spongepowered.org/maven/" }
+    maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url = "https://files.minecraftforge.net/maven" }
+    maven { url = "https://maven.minecraftforge.net/" }
+}
+
 dependencies {
-    // SpongePowered Mixin
-    compile('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
+    // SpongePowered Mixin - versão estável compatível com MC 1.8.9
+    compile('org.spongepowered:mixin:0.7.10-SNAPSHOT') {
         exclude module: 'launchwrapper'
         exclude module: 'guava'
         exclude module: 'commons-io'

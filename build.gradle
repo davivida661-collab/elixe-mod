@@ -31,6 +31,11 @@ minecraft {
     // makeObfSourceJar = false
 }
 
+configurations {
+    embed
+}
+compile.extendsFrom embed
+
 repositories {
     mavenCentral()
     maven { url = "https://repo.spongepowered.org/maven/" }
@@ -41,16 +46,19 @@ repositories {
 
 dependencies {
     // SpongePowered Mixin - versão estável compatível com MC 1.8.9
-    compile('org.spongepowered:mixin:0.7.10-SNAPSHOT') {
+    // 'embed' = no compile classpath E embutido dentro do jar final,
+    // porque o Forge 1.8.9 não traz Mixin (sem isso: ClassNotFoundException MixinTweaker).
+    embed('org.spongepowered:mixin:0.7.10-SNAPSHOT') {
         exclude module: 'launchwrapper'
         exclude module: 'guava'
         exclude module: 'commons-io'
         exclude module: 'gson'
         exclude module: 'commons-lang'
+        exclude group: 'org.ow2.asm' // MC já traz asm-all 5.0.3
     }
 
     // TypeTools - usado pelo event bus alpine (net.jodah.typetools.TypeResolver)
-    compile 'net.jodah:typetools:0.6.3'
+    embed 'net.jodah:typetools:0.6.3'
 }
 
 mixin {
@@ -74,13 +82,21 @@ processResources {
 }
 
 jar {
+    // Embute Mixin + TypeTools no jar final (fat jar)
+    from {
+        configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+    exclude 'META-INF/MANIFEST.MF'
+    exclude 'META-INF/maven/**'
+
     manifest {
         attributes(
             'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
             'TweakOrder': 0,
-            'MixinConfigs': 'mixins.elixe.json',
-            'FMLCorePlugin': 'elixe.core.ElixeCoreMod',
-            'FMLCorePluginContainsFMLMod': 'true'
+            'MixinConfigs': 'mixins.elixe.json'
+            // Sem FMLCorePlugin: em produção o MixinTweaker cuida de tudo.
+            // O coremod (ElixeCoreMod) só é ativado no dev via -Dfml.coreMods.load.
         )
     }
 }
